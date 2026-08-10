@@ -30,7 +30,7 @@ G₀ → G₁ → G₂ → ... → Gₜ
 
 # Running the Experiments
 
-1.Prepare the temporal dataset
+## 1.Prepare the temporal dataset
 
 The model expects a preprocessed temporal snapshot file:
 
