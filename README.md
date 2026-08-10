@@ -28,7 +28,8 @@ The input network is represented as a sequence of temporal snapshots:
 
 G₀ → G₁ → G₂ → ... → Gₜ
 
-#Running the Experiments
+# Running the Experiments
+
 1. Prepare the temporal dataset
 
 The model expects a preprocessed temporal snapshot file:
