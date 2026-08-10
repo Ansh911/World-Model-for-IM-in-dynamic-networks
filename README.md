@@ -27,3 +27,27 @@ This allows seed selection to be performed much faster than simulation-based CEL
 The input network is represented as a sequence of temporal snapshots:
 
 G₀ → G₁ → G₂ → ... → Gₜ
+
+Running the Experiments
+1. Prepare the temporal dataset
+
+The model expects a preprocessed temporal snapshot file:
+
+reddit_snapshots.pkl
+
+or the corresponding .pkl file generated for another SNAP temporal network.
+
+For AskUbuntu, for example:
+
+python3 preprocess_snap.py --input sx-askubuntu.txt.gz --output askubuntu_snapshots.pkl
+2. Run the World Model
+
+Basic experiment with seed budgets K = 10, 20, 30:
+
+python3 train_wm.py \
+    --real_data askubuntu_snapshots.pkl \
+    --celf_snapshots 4 \
+    --samples_per_snapshot 200 \
+    --k 10 20 30
+
+
