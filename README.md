@@ -42,7 +42,7 @@ ex: for AskUbuntu
 
 python3 preprocess_snap.py --input sx-askubuntu.txt.gz --output askubuntu_snapshots.pkl
 
-2.Run the World Model
+## 2.Run the World Model
 
 Basic experiment with seed budgets K = 10, 20, 30:
 
