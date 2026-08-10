@@ -28,7 +28,7 @@ The input network is represented as a sequence of temporal snapshots:
 
 G₀ → G₁ → G₂ → ... → Gₜ
 
-Running the Experiments
+#Running the Experiments
 1. Prepare the temporal dataset
 
 The model expects a preprocessed temporal snapshot file:
@@ -37,9 +37,10 @@ reddit_snapshots.pkl
 
 or the corresponding .pkl file generated for another SNAP temporal network.
 
-For AskUbuntu, for example:
+ex: for AskUbuntu
 
 python3 preprocess_snap.py --input sx-askubuntu.txt.gz --output askubuntu_snapshots.pkl
+
 2. Run the World Model
 
 Basic experiment with seed budgets K = 10, 20, 30:
