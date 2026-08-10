@@ -30,7 +30,7 @@ G₀ → G₁ → G₂ → ... → Gₜ
 
 # Running the Experiments
 
-1. Prepare the temporal dataset
+1.Prepare the temporal dataset
 
 The model expects a preprocessed temporal snapshot file:
 
@@ -42,7 +42,7 @@ ex: for AskUbuntu
 
 python3 preprocess_snap.py --input sx-askubuntu.txt.gz --output askubuntu_snapshots.pkl
 
-2. Run the World Model
+2.Run the World Model
 
 Basic experiment with seed budgets K = 10, 20, 30:
 
