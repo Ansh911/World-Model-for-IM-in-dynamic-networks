@@ -1,20 +1,3 @@
-"""
-Basic Influence Maximization algorithms on static graphs.
-
-Implements the core pieces from Kempe, Kleinberg & Tardos (KDD 2003):
-  - Independent Cascade (IC) diffusion simulation
-  - Monte Carlo spread estimation  sigma(A)
-  - Naive Greedy hill-climbing (with the (1 - 1/e) guarantee)
-  - CELF (Cost-Effective Lazy Forward) -- same output as Greedy, much faster,
-    using submodularity to avoid recomputing marginal gains for every node
-    at every step (Leskovec et al., 2007)
-  - Baseline heuristics: High-Degree, Random
-
-Diffusion model used: "Weighted Cascade" (a parameter-free variant of IC
-also used in the original paper) -- edge (u, v) succeeds with probability
-1 / in-degree(v). This avoids having to hand-pick a propagation probability.
-"""
-
 import heapq
 import random
 import time
@@ -67,13 +50,14 @@ def estimate_spread(G, seeds, probs, R, rng):
 
 
 # ---------------------------------------------------------------------------
-# Naive Greedy (Kempe, Kleinberg & Tardos 2003)
+# Naive Greedy 
 # ---------------------------------------------------------------------------
 
 def greedy(G, k, probs, R=200, seed=0):
     """Naive greedy hill-climbing. At each step, add the node with the
     largest marginal gain in expected spread, estimated by Monte Carlo.
     Guarantees (1 - 1/e) approximation since sigma(.) is submodular."""
+
     rng = random.Random(seed)
     S = []
     spread_history = [0.0]
@@ -94,13 +78,14 @@ def greedy(G, k, probs, R=200, seed=0):
 
 
 # ---------------------------------------------------------------------------
-# CELF (Leskovec et al. 2007) -- identical output to greedy, far fewer evals
+# CELF (Leskovec et al. 2007) 
 # ---------------------------------------------------------------------------
 
 def celf(G, k, probs, R=200, seed=0):
     """CELF: exploits submodularity. A node's marginal gain can only shrink
     as the seed set grows, so we lazily re-evaluate only the top candidate
     instead of every node at every iteration."""
+
     rng = random.Random(seed)
     n_spread_evals = 0
 
@@ -109,7 +94,7 @@ def celf(G, k, probs, R=200, seed=0):
     for v in G.nodes():
         n_spread_evals += 1
         g = estimate_spread(G, [v], probs, R, rng)
-        heapq.heappush(gains, (-g, v, 0))  # (neg gain, node, "last recomputed at" iteration)
+        heapq.heappush(gains, (-g, v, 0))  
 
     S = []
     spread_history = [0.0]
@@ -147,7 +132,7 @@ def random_nodes(G, k, seed=0):
 
 
 # ---------------------------------------------------------------------------
-# Evaluation helper: spread curve for a fixed seed ORDER (e.g. from degree/random)
+# Evaluation helper: spread curve for a fixed seed ORDER 
 # ---------------------------------------------------------------------------
 
 def spread_curve_for_ordering(G, ordering, probs, R, seed=0):

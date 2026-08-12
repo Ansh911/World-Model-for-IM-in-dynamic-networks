@@ -1,18 +1,5 @@
-"""
-Synthetic dynamic social network generator.
-
-Since we don't have labeled real-world dynamic-cascade data on hand, we
-simulate a plausible dynamic network: start from a scale-free (Barabasi-
-Albert) graph, then evolve it over T snapshots by (a) adding new edges via
-preferential attachment (new ties form more often to already well-connected
-nodes -- mimics real social network growth) and (b) randomly decaying a
-small fraction of existing edges (relationships fading). Node set is fixed
-across time; only the edge set changes.
-"""
-
 import random
 import networkx as nx
-
 
 def make_initial_graph(n=100, m=3, seed=0):
     return nx.barabasi_albert_graph(n, m, seed=seed)
@@ -20,7 +7,7 @@ def make_initial_graph(n=100, m=3, seed=0):
 
 def evolve_graph(G, add_frac=0.06, remove_frac=0.04, rng=None):
     """Return a NEW graph: G with some edges removed (decay) and some
-    new edges added (preferential attachment growth)."""
+    new edges added """
     rng = rng or random.Random()
     G2 = G.copy()
     n_edges = G2.number_of_edges()
@@ -35,7 +22,7 @@ def evolve_graph(G, add_frac=0.06, remove_frac=0.04, rng=None):
     n_add = max(1, int(add_frac * n_edges))
     nodes = list(G2.nodes())
     degrees = dict(G2.degree())
-    weights = [degrees[v] + 1 for v in nodes]  # +1 so zero-degree nodes can still gain ties
+    weights = [degrees[v] + 1 for v in nodes] 
     added = 0
     attempts = 0
     while added < n_add and attempts < n_add * 20:
@@ -50,7 +37,7 @@ def evolve_graph(G, add_frac=0.06, remove_frac=0.04, rng=None):
 
 
 def generate_snapshot_sequence(n=100, m=3, T=15, seed=0):
-    """Generate T evolving snapshots of a dynamic social network."""
+   
     rng = random.Random(seed)
     G0 = make_initial_graph(n=n, m=m, seed=seed)
     snapshots = [G0]

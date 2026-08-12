@@ -4,42 +4,6 @@ evaluate whether it can pick good seed sets on LATER, held-out snapshots --
 faster than classical CELF, which must re-run expensive Monte Carlo
 simulations from scratch every time the network changes.
 
-THIS VERSION fixes three real problems found in earlier runs:
-
-1. NON-DETERMINISM: PyTorch's multi-threaded CPU ops don't guarantee
-   identical results run-to-run even with a fixed seed (floating-point
-   addition order varies with thread scheduling). Forced single-threaded
-   + deterministic algorithms so re-running with the same seed now
-   actually reproduces the same trained model.
-
-2. LOW MSE != GOOD RANKING: a model can have low average prediction
-   error while still getting the RELATIVE ORDER of candidates wrong --
-   which is all greedy seed selection actually depends on. Added a
-   pairwise ranking loss (alongside the original MSE regression loss)
-   that directly penalizes mis-ordered pairs of seed sets from the same
-   snapshot, since that's the property that actually matters for
-   planning quality.
-
-3. NO SAFEGUARD AGAINST A BAD TRAINING RUN: previously just used
-   whatever the model looked like after a fixed number of epochs, even
-   if an earlier epoch was actually better. Added a genuine train/val/
-   test split: the last training-range snapshot is held out as a
-   validation snapshot (never directly trained on), and every few epochs
-   we check the model's REAL seed-selection quality on it via actual
-   simulation. The best-performing checkpoint by this real metric is
-   restored before final evaluation on the true test snapshots -- so a
-   noisy/unlucky final epoch can no longer wreck the reported result.
-
-Also restructured the training loop to compute each snapshot's graph
-embedding ONCE per epoch (not once per individual training example), and
-combines spread + ranking + link losses into a single weighted loss per
-snapshot per step, instead of firing off separate, competing gradient
-updates -- this is both more correct (properly balanced) and much faster.
-
-Usage:
-    python train_world_model.py --real_data reddit_snapshots.pkl
-    python train_world_model.py --real_data reddit_snapshots.pkl --celf_snapshots 4
-    python train_world_model.py                      # synthetic fallback
 """
 
 import argparse
@@ -119,7 +83,7 @@ else:
 n_train = max(3, int(T * 0.7))
 VAL_SNAPSHOT = n_train - 1               # held out from training, used for checkpoint selection
 TRAIN_SNAPSHOTS = range(0, n_train - 1)  # actual training snapshots
-TEST_SNAPSHOTS = range(n_train, T)       # true held-out final evaluation, untouched until the end
+TEST_SNAPSHOTS = range(n_train, T)       # true held-out final evaluation
 
 if args.k is not None:
     K_LIST = sorted(set(args.k))
@@ -142,7 +106,7 @@ else:
     celf_snapshots = list(TEST_SNAPSHOTS)
 
 # ---------------------------------------------------------------------------
-# Step 1: generate training labels, grouped by snapshot (needed for pairing)
+# Step 1: generate training labels, grouped by snapshot ( for pairing)
 # ---------------------------------------------------------------------------
 
 print("\nGenerating training labels via real IC Monte Carlo simulation...")
@@ -176,9 +140,8 @@ print(f"Done in {time.time()-t0:.1f}s")
 
 def pairwise_ranking_loss(predictor, Z, examples, rng, max_margin):
     """Penalizes pairs of seed sets (from the same snapshot, so directly
-    comparable) that the model ranks in the wrong order. This is what
-    greedy selection actually needs -- correct relative ordering, not
-    correct absolute spread values."""
+    comparable) that the model ranks in the wrong order. """
+
     if len(examples) < 2:
         return torch.tensor(0.0)
     idx = list(range(len(examples)))
@@ -328,6 +291,7 @@ for t in TEST_SNAPSHOTS:
         else:
             print("          CELF skipped (see --celf_snapshots)")
     print()
+    
 # ---------------------------------------------------------------------------
 # Plot + summary
 # ---------------------------------------------------------------------------

@@ -3,15 +3,6 @@ Convert the SNAP soc-RedditHyperlinks dataset (a REAL 3.25-year dynamic
 social network: Jan 2014 - Apr 2017, 55,863 nodes, 858,490 edges) into a
 sequence of graph snapshots compatible with dynamic_graph.py / world_model.py.
 
-Download first (from your own machine / Colab -- not reachable from this
-sandbox):
-    https://snap.stanford.edu/data/soc-redditHyperlinks-body.tsv
-    https://snap.stanford.edu/data/soc-redditHyperlinks-title.tsv
-(you can use either file, or concatenate both for more edges)
-
-Usage:
-    python process_reddit_hyperlinks.py soc-redditHyperlinks-body.tsv \
-        --max_nodes 2000 --n_snapshots 16 --window_days 180
 """
 
 import argparse
@@ -23,8 +14,7 @@ import networkx as nx
 
 
 def load_edges(path):
-    """Parse the raw tsv. Columns: SOURCE_SUBREDDIT TARGET_SUBREDDIT POST_ID
-    TIMESTAMP POST_LABEL POST_PROPERTIES."""
+   
     edges = []
     with open(path, "r", encoding="utf-8") as f:
         header = f.readline()  # skip header row
@@ -54,9 +44,7 @@ def build_node_index(edges, max_nodes):
 
 
 def make_snapshots(edges, node_to_id, n_snapshots, window_days):
-    """Bin edges into n_snapshots windows of `window_days` each, in
-    chronological order. Each snapshot only includes edges between nodes
-    that survived the max_nodes filter."""
+    
     filtered = [(src, dst, t) for src, dst, t in edges if src in node_to_id and dst in node_to_id]
     filtered.sort(key=lambda e: e[2])
     if not filtered:
@@ -106,8 +94,6 @@ def main():
         pickle.dump(snapshots, f)
     print(f"\nSaved {len(snapshots)} snapshots to {args.out}")
 
-    # save the id -> subreddit name mapping too, so seed sets can be reported
-    # by real name later, not just anonymous integers
     id_to_name = {i: name for name, i in node_to_id.items()}
     names_out = args.out.replace(".pkl", "_node_names.pkl")
     with open(names_out, "wb") as f:

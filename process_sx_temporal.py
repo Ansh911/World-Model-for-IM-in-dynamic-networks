@@ -4,27 +4,6 @@ sx-stackoverflow, sx-mathoverflow) into time-binned graph snapshots,
 compatible with the same world_model.py / train_world_model.py pipeline
 used for the Reddit Hyperlinks dataset.
 
-These datasets span 7+ years natively, so this script slices a shorter,
-contiguous window out of the middle (skipping the first `start_day_offset`
-days, which tend to be sparse/immature activity) to match a 3-4 year
-duration comparable to the Reddit dataset.
-
-Download first (from your own machine -- not reachable from this sandbox):
-    https://snap.stanford.edu/data/sx-askubuntu.txt.gz
-    https://snap.stanford.edu/data/sx-superuser.txt.gz
-Then unzip: gunzip sx-askubuntu.txt.gz  (etc.)
-
-File format (SRC DST UNIXTS, one edge per line, no header):
-    SRC: source user id
-    DST: target user id
-    UNIXTS: unix timestamp (seconds since epoch)
-
-Usage:
-    python process_sx_temporal.py sx-askubuntu.txt --max_nodes 40000 \
-        --n_snapshots 13 --window_days 90 --out askubuntu_snapshots.pkl
-
-    python process_sx_temporal.py sx-superuser.txt --max_nodes 45000 \
-        --n_snapshots 13 --window_days 90 --out superuser_snapshots.pkl
 """
 
 import argparse
