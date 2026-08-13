@@ -32,8 +32,7 @@ def load_edges(path):
 
 
 def build_node_index(edges, max_nodes):
-    """Keep only the max_nodes most active subreddits (by total degree),
-    so the graph stays a tractable size for the GCN encoder."""
+    
     activity = Counter()
     for src, dst, _t in edges:
         activity[src] += 1
@@ -62,7 +61,7 @@ def make_snapshots(edges, node_to_id, n_snapshots, window_days):
         elapsed = (t - t_start).total_seconds()
         snap_idx = int(elapsed // window)
         if snap_idx >= n_snapshots:
-            break  # only take the first n_snapshots * window_days of data
+            break  # take the first n_snapshots * window_days of data
         snapshots[snap_idx].add_edge(node_to_id[src], node_to_id[dst])
 
     return snapshots
