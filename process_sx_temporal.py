@@ -1,8 +1,6 @@
 """
-Preprocess SNAP "sx-*" family temporal networks (sx-askubuntu, sx-superuser,
-sx-stackoverflow, sx-mathoverflow) into time-binned graph snapshots,
-compatible with the same world_model.py / train_world_model.py pipeline
-used for the Reddit Hyperlinks dataset.
+Preprocess SNAP "sx-*" family temporal networks (sx-askubuntu, sx-superuser) into time-binned graph snapshots,
+compatible with the same world_model.py / train_world_model.py pipeline used for the Reddit Hyperlinks dataset.
 
 """
 
@@ -31,7 +29,7 @@ def load_edges(path):
 
 
 def build_node_index(edges, max_nodes):
-    """Keep only the max_nodes most active users (by total in+out degree)."""
+    """Keep only the max_nodes most active users ( total in+out degree)."""
     activity = Counter()
     for src, dst, _t in edges:
         activity[src] += 1
@@ -42,8 +40,8 @@ def build_node_index(edges, max_nodes):
 
 def make_snapshots(edges, node_to_id, n_snapshots, window_days, start_day_offset):
     """Slice a contiguous n_snapshots * window_days window, starting
-    start_day_offset days after the dataset's first timestamp (to skip
-    the sparser early ramp-up period), and bin edges into it."""
+    start_day_offset days after the dataset's first timestamp and bin edges into it."""
+    
     filtered = [(s, d, t) for s, d, t in edges if s in node_to_id and d in node_to_id]
     filtered.sort(key=lambda e: e[2])
     if not filtered:
