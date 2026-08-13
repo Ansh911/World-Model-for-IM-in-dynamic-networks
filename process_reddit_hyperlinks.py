@@ -1,7 +1,7 @@
 """
 Convert the SNAP soc-RedditHyperlinks dataset (a REAL 3.25-year dynamic
-social network: Jan 2014 - Apr 2017, 55,863 nodes, 858,490 edges) into a
-sequence of graph snapshots compatible with dynamic_graph.py / world_model.py.
+social network: Jan 2014 - Apr 2017) into a sequence of graph snapshots
+compatible with dynamic_graph.py / world_model.py.
 
 """
 
