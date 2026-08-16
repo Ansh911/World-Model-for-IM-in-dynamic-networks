@@ -44,12 +44,12 @@ python3 preprocess_snap.py --input sx-askubuntu.txt.gz --output askubuntu_snapsh
 
 ## 2.Run the World Model
 
-Basic experiment with seed budgets K = 10, 20, 30:
+Basic experiment with seed budgets K = 10, 20, 30, 40:
 
 python3 train_wm.py \
     --real_data askubuntu_snapshots.pkl \
     --celf_snapshots 4 \
-    --samples_per_snapshot 200 \
+    --samples_per_snapshot 400 \
     --k 10 20 30 40
 
 
