@@ -50,6 +50,6 @@ python3 train_wm.py \
     --real_data askubuntu_snapshots.pkl \
     --celf_snapshots 4 \
     --samples_per_snapshot 200 \
-    --k 10 20 30
+    --k 10 20 30 40
 
 
